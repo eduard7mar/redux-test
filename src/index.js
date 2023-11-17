@@ -1,17 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { legacy_createStore as createStore } from "redux";
+import reducer from "./reducer";
+import { inc, dec, rnd } from "./actions";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const store = createStore(reducer);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const update = () => {
+  document.getElementById("counter").textContent = store.getState().value;
+};
+
+store.subscribe(update);
+
+document.getElementById("inc").addEventListener("click", () => {
+  store.dispatch(inc());
+});
+
+document.getElementById("dec").addEventListener("click", () => {
+  store.dispatch(dec());
+});
+
+document.getElementById("rnd").addEventListener("click", () => {
+  const value = Math.floor(Math.random() * 10);
+  store.dispatch(rnd(value));
+});
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<React.StrictMode></React.StrictMode>);
